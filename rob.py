@@ -12,7 +12,7 @@ client = commands.Bot(command_prefix='?')
 def require_user(discorduser):
     user = ustats.get(discorduser.name, None)
     if not user:
-        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0 }
+        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete" }
         return ustats[discorduser.name]
     return user
 
@@ -41,20 +41,20 @@ def dump_stats(username):
 def require_assign1(msg):
     if msg.channel.name != "opdracht-1-screenshot-dag-1":
         return
-    print("we're in")
     user = require_user(msg.author)
     if user.get("assign1", "") == "completed":
         return
-    print("check attach", msg.attachments)
     if len(msg.attachments) and msg.attachments[0].content_type.startswith("image"):
-        print(msg.attachments[0])
         user["assign1url"] = msg.attachments[0].url
         user["assign1"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign1"] = "incomplete"
         update_user(msg.author, user)
 
 @client.command()
 async def stat(ctx, user):
-    print(user, ctx)
     await ctx.send(dump_stats(user))
 
 
@@ -64,15 +64,23 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message)
+    #print(message)
     if message.author == client.user:
         return
 
     await client.process_commands(message)
     
-    require_assign1(message)
+    if require_assign1(message):
+        #emoji = get(message.server.emojis, name="img000000093")
+        emoji = '\N{White Heavy Check Mark}'
+        #'\N{THUMBS UP SIGN}'
+        await message.add_reaction(emoji)
+        #await message.channel.send(":img000000093:")
 
+    #print(message.content)
     if message.content.lower().startswith('hello'):
+        emoji = '\N{Waving Hand Sign}'
+        await message.add_reaction(emoji)
         await message.channel.send('Hello {}!'.format(message.author.name))
 
     require_user(message.author)
