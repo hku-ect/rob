@@ -89,6 +89,26 @@ async def on_message(message):
     words = len(message.content.strip().split(" "))
     update_word_count(message.author, words)
 
+### TODO: how to get who created the channel as it is not in members list
+@client.event
+async def on_guild_channel_create(channel):
+    print(channel)
+    for user in channel.members:
+        print("channel {} member {}".format(channel.name, user))
+        ustat = require_user(user)
+        ustat["assign2"] = "completed"
+        ustat["assign2channel"] = channel.name
+        update_user(user, ustat)
+
+@client.event
+async def on_guild_channel_update(before, after):
+    print("channel {} update".format(before))
+    for user in after.members:
+        print("channel {} member {}".format(channel.name, user))
+        ustat = require_user(user)
+        ustat["assign2"] = "completed"
+        ustat["assign2channel"] = after.name
+        update_user(user, ustat)
 
 if __name__ == "__main__":
     token = sys.argv[1]
