@@ -166,7 +166,7 @@ async def on_guild_channel_create(channel):
 async def on_guild_channel_update(before, after):
     print("channel {} update".format(before))
     for user in after.members:
-        print("channel {} member {}".format(channel.name, user))
+        print("channel {} member {}".format(after.name, user))
         ustat = require_user(user)
         ustat["assign2"] = "completed"
         ustat["assign2channel"] = after.name
