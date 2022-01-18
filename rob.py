@@ -3,7 +3,8 @@ import json
 import discord
 from discord.ext import commands
 import shelve
-
+import matplotlib.pyplot as plt
+import io
 
 #ustats = {}
 ustats = shelve.open("userstats", writeback=True)
@@ -51,6 +52,16 @@ def dump_stats(username):
         ret += "{} : {}\n".format(key, user[key])
     return ret
 
+def bar_chart(numbers, labels, pos):
+    plt.barh(pos, numbers, color='red')
+    plt.yticks(ticks=pos, labels=labels)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    #im = Image.open(buf)    
+    #plt.show()
+    return buf   
+
 def require_assign1(msg):
     if msg.channel.name != "opdracht-1-screenshot-dag-1":
         return
@@ -82,7 +93,23 @@ async def stat(ctx, user):
 
 @client.command()
 async def dumpdb(ctx):
-    await ctx.send(json.dumps(dict(ustats)))
+    await ctx.send("```json\n" + json.dumps(dict(ustats)) + "```")
+
+@client.command()
+async def hiscore(ctx, iets=None):
+    iets = iets or "total_words"
+    print("generate chart for {}".format(iets))
+    score = {}
+    for k,v in ustats.items():
+        w = v.get(iets, 0)
+        score[k] = w
+    res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0])}
+    #print(numbers)
+    labels = res.keys() #['Electric', 'Solar', 'Diesel', 'Unleaded']
+    #print(labels)
+    pos = range(len(res))
+    img = bar_chart(res.values(), labels, pos)
+    await ctx.send(file=discord.File(img, filename="hiscore.png"))
 
 @client.event
 async def on_ready():
