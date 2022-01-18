@@ -1,4 +1,5 @@
 import sys
+import json
 import discord
 from discord.ext import commands
 import shelve
@@ -12,7 +13,7 @@ client = commands.Bot(command_prefix='?')
 def require_user(discorduser):
     user = ustats.get(discorduser.name, None)
     if not user:
-        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete" }
+        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, 'total_messages': 0, 'total_reactions': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete" }
         return ustats[discorduser.name]
     return user
 
@@ -25,6 +26,18 @@ def update_word_count(duser, count):
     cur_count = user['total_words']
     print(cur_count, count)
     user['total_words'] = cur_count + count
+    update_user(duser, user)
+
+def update_message_count(duser):
+    user = require_user(duser)
+    cur_count = user.get('total_messages', 0)
+    user['total_messages'] = cur_count + 1
+    update_user(duser, user)
+
+def update_reaction_count(duser):
+    user = require_user(duser)
+    cur_count = user.get('total_reactions', 0)
+    user['total_reactions'] = cur_count + 1
     update_user(duser, user)
 
 def dump_stats(username):
@@ -53,10 +66,23 @@ def require_assign1(msg):
         user["assign1"] = "incomplete"
         update_user(msg.author, user)
 
+# help challenge
+def require_assign3(msg):
+    if (msg.channel.category_id == 917742829336428631): # d.dungeons category
+        user = require_user(msg.author)
+        if user.get("assign3", "") == "completed":
+            return False
+        user["assign3"] = "completed"
+        update_user(msg.author, user)
+        return True 
+
 @client.command()
 async def stat(ctx, user):
     await ctx.send(dump_stats(user))
 
+@client.command()
+async def dumpdb(ctx):
+    await ctx.send(json.dumps(dict(ustats)))
 
 @client.event
 async def on_ready():
@@ -75,19 +101,28 @@ async def on_message(message):
         emoji = '\N{White Heavy Check Mark}'
         #'\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)
-        #await message.channel.send(":img000000093:")
-
+    
+    if require_assign3(message):
+        pass
+        
     #print(message.content)
     if message.content.lower().startswith('hello'):
-        emoji = '\N{Waving Hand Sign}'
-        await message.add_reaction(emoji)
+        #emoji = '\N{Waving Hand Sign}'
+        #await message.add_reaction(emoji)
         await message.channel.send('Hello {}!'.format(message.author.name))
-
-    require_user(message.author)
 
     # count words
     words = len(message.content.strip().split(" "))
     update_word_count(message.author, words)
+
+    update_message_count(message.author)
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if user == client.user:
+        return
+    update_reaction_count(user)
+
 
 ### TODO: how to get who created the channel as it is not in members list
 @client.event
