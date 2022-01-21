@@ -55,7 +55,7 @@ def dump_stats(username):
 
 def dumpdbcsv():
     ret = "username;"
-    columns = ["assign1", "assign2", "assign3", "assign4"]
+    columns = ["assign1", "assign2", "assign3", "assign4", "assign5", "assign6", "assign7", "assign8"]
     for v in columns:
         ret += "{};".format(v)
     ret+="\n"
@@ -287,7 +287,7 @@ async def on_reaction_add(reaction, user):
 ### TODO: how to get who created the channel as it is not in members list
 @client.event
 async def on_guild_channel_create(channel):
-    print(channel)
+    #print(channel.members)
     for user in channel.members:
         print("channel {} member {}".format(channel.name, user))
         ustat = require_user(user)
@@ -298,6 +298,7 @@ async def on_guild_channel_create(channel):
 @client.event
 async def on_guild_channel_update(before, after):
     print("channel {} update".format(before))
+    #print(before.members, after.members)
     for user in after.members:
         print("channel {} member {}".format(after.name, user))
         ustat = require_user(user)
