@@ -1,5 +1,6 @@
 import sys
 import json
+import random
 import discord
 from discord.ext import commands
 import shelve
@@ -92,15 +93,38 @@ def require_assign1(msg):
         user["assign1"] = "incomplete"
         update_user(msg.author, user)
 
-# help challenge
+# assign 3: ask for help challenge
 def require_assign3(msg):
+    if msg.channel.name == "ask-for-help-challenge":
+        return 2
     if (msg.channel.category_id == 917742829336428631): # d.dungeons category
         user = require_user(msg.author)
         if user.get("assign3", "") == "completed":
-            return False
+            return 0
         user["assign3"] = "completed"
         update_user(msg.author, user)
-        return True 
+        return 1
+
+def require_assign4(msg):
+    user = require_user(msg.author)
+    if user.get("assign4", "") == "completed":
+        return False
+    if len(msg.attachments) and msg.attachments[0].content_type.startswith("image"):
+        user["assign4url"] = msg.attachments[0].url
+        user["assign4"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign4"] = "incomplete"
+        update_user(msg.author, user)
+
+        
+#assign4: give help proof screenshot
+#assign5: pdf presentation upload
+#assign6: faceswap proof screenshot
+#assign7: play with runway proof screenshot
+#assign8: link/pdf/docx of zip
+#assign9: end presentation pdf/pptp/ group???
 
 @client.command()
 async def stat(ctx, user):
@@ -143,14 +167,25 @@ async def on_message(message):
     await client.process_commands(message)
     
     if require_assign1(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+    
+    ret = require_assign3(message)
+    if ret == 1:
         #emoji = get(message.server.emojis, name="img000000093")
         emoji = '\N{White Heavy Check Mark}'
         #'\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)
+    elif ret == 2:
+        reps = ['Hallo {}, misschien kun je beter om hulp vragen in een van de dungeons kanalen?', 
+                'Goede post {}! Maar als het voor de "hulp-vraag-challenge" is, kun je die beter posten in de Help-help-helpdesk (in de Dungeons)'
+                'ja, okay, maar {} . . ., misschien kun je hulpvragen beter in een van de dungeons kanalen posten, zoals de HelpDesk?']        
+        await message.channel.send(random.choice(reps).format(message.author.name), reference=message)
+
+    if require_assign4(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
     
-    if require_assign3(message):
-        pass
-        
     #print(message.content)
     if message.content.lower().startswith('hello'):
         #emoji = '\N{Waving Hand Sign}'
