@@ -172,7 +172,7 @@ def require_assign7(msg):
 
 #assign8: link/pdf/docx of zip
 def require_assign8(msg):
-    if msg.channel.name != "your-presentation-week-1":
+    if msg.channel.name != "end-documentation":
         return        
     user = require_user(msg.author)
     if user.get("assign8", "") == "completed":
