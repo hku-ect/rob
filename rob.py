@@ -105,6 +105,7 @@ def require_assign3(msg):
         update_user(msg.author, user)
         return 1
 
+#assign4: give help proof screenshot
 def require_assign4(msg):
     user = require_user(msg.author)
     if user.get("assign4", "") == "completed":
@@ -119,8 +120,22 @@ def require_assign4(msg):
         update_user(msg.author, user)
 
         
-#assign4: give help proof screenshot
 #assign5: pdf presentation upload
+def require_assign5(msg):
+    if msg.channel.name != "your-presentation-week-1":
+        return        
+    user = require_user(msg.author)
+    if user.get("assign5", "") == "completed":
+        return False
+    if ( len(msg.attachments) and msg.attachments[0].content_type.startswith("application/pdf") ) or message.content.contains("http"):
+        user["assign5url"] = msg.attachments[0].url
+        user["assign5"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign4"] = "incomplete"
+        update_user(msg.author, user)
+
 #assign6: faceswap proof screenshot
 #assign7: play with runway proof screenshot
 #assign8: link/pdf/docx of zip
@@ -183,6 +198,10 @@ async def on_message(message):
         await message.channel.send(random.choice(reps).format(message.author.name), reference=message)
 
     if require_assign4(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+
+    if require_assign5(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
     
