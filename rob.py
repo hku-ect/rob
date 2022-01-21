@@ -107,6 +107,8 @@ def require_assign3(msg):
 
 #assign4: give help proof screenshot
 def require_assign4(msg):
+    if msg.channel.name != "help-someone-or-a-group":
+        return
     user = require_user(msg.author)
     if user.get("assign4", "") == "completed":
         return False
@@ -138,10 +140,12 @@ def require_assign5(msg):
 
 #assign6: faceswap proof screenshot
 def require_assign6(msg):
+    if msg.channel.name != "faceswap":
+        return
     user = require_user(msg.author)
     if user.get("assign6", "") == "completed":
         return False
-    if len(msg.attachments) and msg.attachments[0].content_type.startswith("image"):
+    if len(msg.attachments) and ( msg.attachments[0].content_type.startswith("video") or msg.attachments[0].content_type.startswith("image") ):
         user["assign6url"] = msg.attachments[0].url
         user["assign6"] = "completed"
         update_user(msg.author, user)
@@ -151,7 +155,38 @@ def require_assign6(msg):
         update_user(msg.author, user)
 
 #assign7: play with runway proof screenshot
+def require_assign7(msg):
+    if msg.channel.name != "play-with-runway-proof":
+        return
+    user = require_user(msg.author)
+    if user.get("assign7", "") == "completed":
+        return False
+    if len(msg.attachments) and ( msg.attachments[0].content_type.startswith("video") or msg.attachments[0].content_type.startswith("image") ):
+        user["assign7url"] = msg.attachments[0].url
+        user["assign7"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign7"] = "incomplete"
+        update_user(msg.author, user)
+
 #assign8: link/pdf/docx of zip
+def require_assign8(msg):
+    if msg.channel.name != "your-presentation-week-1":
+        return        
+    user = require_user(msg.author)
+    if user.get("assign8", "") == "completed":
+        return False
+    if "http" in msg.content or len(msg.attachments):
+        #user["assign5url"] = msg.attachments[0].url
+        user["assign8"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign8"] = "incomplete"
+        update_user(msg.author, user)
+
+
 #assign9: end presentation pdf/pptp/ group???
 
 @client.command()
@@ -217,7 +252,19 @@ async def on_message(message):
     if require_assign5(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
+
+    if require_assign6(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+
+    if require_assign7(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
     
+    if require_assign8(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+        
     #print(message.content)
     if message.content.lower().startswith('hello'):
         #emoji = '\N{Waving Hand Sign}'
