@@ -52,7 +52,22 @@ def dump_stats(username):
         ret += "{} : {}\n".format(key, user[key])
     return ret
 
+def dumpdbcsv():
+    ret = "username;"
+    columns = ["assign1", "assign2", "assign3", "assign4"]
+    for v in columns:
+        ret += "{};".format(v)
+    ret+="\n"
+    for user, entry in ustats.items():
+        ret += "{};".format(user)
+        for c in columns:
+            ret += entry.get(c, "not found")
+            ret += ";"
+        ret += "\n"
+    return ret
+
 def bar_chart(numbers, labels, pos):
+    plt.barh(pos, numbers, color='green')
     plt.barh(pos, numbers, color='red')
     plt.yticks(ticks=pos, labels=labels)
     buf = io.BytesIO()
@@ -94,6 +109,10 @@ async def stat(ctx, user):
 @client.command()
 async def dumpdb(ctx):
     await ctx.send("```json\n" + json.dumps(dict(ustats)) + "```")
+
+@client.command()
+async def dumpcsv(ctx):
+    await ctx.send(dumpdbcsv())
 
 @client.command()
 async def hiscore(ctx, iets=None):
