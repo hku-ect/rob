@@ -127,7 +127,7 @@ def require_assign5(msg):
     user = require_user(msg.author)
     if user.get("assign5", "") == "completed":
         return False
-    if ( len(msg.attachments) and msg.attachments[0].content_type.startswith("application/pdf") ) or msg.content.contains("http"):
+    if ( len(msg.attachments) and msg.attachments[0].content_type.startswith("application/pdf") ) or "http" in msg.content:
         user["assign5url"] = msg.attachments[0].url
         user["assign5"] = "completed"
         update_user(msg.author, user)
@@ -136,9 +136,20 @@ def require_assign5(msg):
         user["assign4"] = "incomplete"
         update_user(msg.author, user)
 
-
-
 #assign6: faceswap proof screenshot
+def require_assign6(msg):
+    user = require_user(msg.author)
+    if user.get("assign4", "") == "completed":
+        return False
+    if len(msg.attachments) and msg.attachments[0].content_type.startswith("image"):
+        user["assign4url"] = msg.attachments[0].url
+        user["assign4"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign4"] = "incomplete"
+        update_user(msg.author, user)
+
 #assign7: play with runway proof screenshot
 #assign8: link/pdf/docx of zip
 #assign9: end presentation pdf/pptp/ group???
