@@ -239,9 +239,9 @@ async def on_message(message):
         #'\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)
     elif ret == 2:
-        reps = ['Hallo {}, misschien kun je beter om hulp vragen in een van de d.dungeons kanalen?',
-                'Goede post {}! Maar als het voor de "hulp-vraag-challenge" is, kun je die beter posten in de Help-help-helpdesk (in de Dungeons)',
-                'ja, okay, maar beste {} . . ., misschien kun je hulpvragen beter in een van de dungeons kanalen posten, zoals de HelpDesk?',
+        reps = ['Hallo {}, misschien kun je beter om hulp vragen in een van de d.dungeons kanalen, zoals <#917742829529362476>?',
+                'Goede post {}! Maar als het voor de "hulp-vraag-challenge" is, kun je die beter posten in de <#917742829529362476> (in de Dungeons)',
+                'ja, okay, maar beste {} . . ., misschien kun je hulpvragen beter in een van de dungeons kanalen posten, zoals de  <#917742829529362476>?',
                 'Great post {}, but . . ., if its a help question, you could better ask it in the dungeons? Then you might score a point!',
                 'Rob likes your style {}, but if it is concerning a helpdesk question, you might better post in the HelpDesk (in the dungeons) ',
                 'Wow, just wow {}. . .',
@@ -250,7 +250,7 @@ async def on_message(message):
                 'Ja, maar wat denk je er zelf van, {}?',
                 '{}! Wat leuk dat je hier post, hoe is het met je?',
                 'I am afraid I can\'t do that, Dave, eh. . . {} ',
-                'prachtig geformuleerd {}, maar ik snap er niks van. . . wie weet kunnen we het in het help-help-helpdesk kanaal proberen?',
+                'prachtig geformuleerd {}, maar ik snap er niks van. . . wie weet kunnen we het in het help-help-helpdesk kanaal proberen?  <#917742829529362476>',
                 'Poeh, daar zeg je wat, {}. . . Zullen we het ergens in de Dungeons voortzetten? Daar is vast iemand die er (nog) beter antwoord op kan geven!',
                 'Eeehhh...',
                 'Just a minute {}, I\'m Computing (and working on) my best answer. . .',
