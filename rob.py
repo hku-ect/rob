@@ -15,7 +15,7 @@ client = commands.Bot(command_prefix='?')
 def require_user(discorduser):
     user = ustats.get(discorduser.name, None)
     if not user:
-        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, 'total_messages': 0, 'total_reactions': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete" }
+        ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, 'total_messages': 0, 'total_reactions': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete", "assign5" : "incomplete", "assign6" : "incomplete", "assign7" : "incomplete", "assign8" : "incomplete"   }
         return ustats[discorduser.name]
     return user
 
@@ -46,7 +46,7 @@ def dump_stats(username):
     user = ustats.get(username, None)
     if not user:
         return "User {0} not found".format(username)
-        
+
     statskeys = sorted(user.keys())
     ret = "Stats for user: {}\n".format(username)
     for key in statskeys:
@@ -74,10 +74,11 @@ def bar_chart(numbers, labels, pos):
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
-    #im = Image.open(buf)    
+    #im = Image.open(buf)
     #plt.show()
-    return buf   
+    return buf
 
+# assignment 1 : post screenshot
 def require_assign1(msg):
     if msg.channel.name != "opdracht-1-screenshot-dag-1":
         return
@@ -93,11 +94,11 @@ def require_assign1(msg):
         user["assign1"] = "incomplete"
         update_user(msg.author, user)
 
-# assign 3: ask for help challenge
+# assignment 3: ask for help challenge (in Help-help-helpdesk channel)
 def require_assign3(msg):
-    if msg.channel.name == "ask-for-help-challenge":
+    if msg.channel.name == "ask-for-help-challenge": # assignment channel, wrong channel to post question --> answer with hint
         return 2
-    if (msg.channel.category_id == 917742829336428631): # d.dungeons category
+    if (msg.channel.category_id == 917742829336428631): # d.dungeons category, including helpdesk channel
         user = require_user(msg.author)
         if user.get("assign3", "") == "completed":
             return 0
@@ -105,7 +106,7 @@ def require_assign3(msg):
         update_user(msg.author, user)
         return 1
 
-#assign4: give help proof screenshot
+#assignment 4: give help proof screenshot
 def require_assign4(msg):
     if msg.channel.name != "help-someone-or-a-group":
         return
@@ -121,11 +122,11 @@ def require_assign4(msg):
         user["assign4"] = "incomplete"
         update_user(msg.author, user)
 
-        
-#assign5: pdf presentation upload
+
+#assignment 5: pdf presentation upload
 def require_assign5(msg):
     if msg.channel.name != "your-presentation-week-1":
-        return        
+        return
     user = require_user(msg.author)
     if user.get("assign5", "") == "completed":
         return False
@@ -135,10 +136,10 @@ def require_assign5(msg):
         update_user(msg.author, user)
         return True
     else:
-        user["assign4"] = "incomplete"
+        user["assign5"] = "incomplete"
         update_user(msg.author, user)
 
-#assign6: faceswap proof screenshot
+#assignment 6: faceswap proof screenshot
 def require_assign6(msg):
     if msg.channel.name != "faceswap":
         return
@@ -154,7 +155,7 @@ def require_assign6(msg):
         user["assign6"] = "incomplete"
         update_user(msg.author, user)
 
-#assign7: play with runway proof screenshot
+#assignment 7: play with Runway proof screenshot
 def require_assign7(msg):
     if msg.channel.name != "play-with-runway-proof":
         return
@@ -170,10 +171,10 @@ def require_assign7(msg):
         user["assign7"] = "incomplete"
         update_user(msg.author, user)
 
-#assign8: link/pdf/docx of zip
+#assignment 8: link/pdf/docx or zip of end documentation
 def require_assign8(msg):
     if msg.channel.name != "end-documentation":
-        return        
+        return
     user = require_user(msg.author)
     if user.get("assign8", "") == "completed":
         return False
@@ -186,8 +187,6 @@ def require_assign8(msg):
         user["assign8"] = "incomplete"
         update_user(msg.author, user)
 
-
-#assign9: end presentation pdf/pptp/ group???
 
 @client.command()
 async def stat(ctx, user):
@@ -228,11 +227,11 @@ async def on_message(message):
         return
 
     await client.process_commands(message)
-    
+
     if require_assign1(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
-    
+
     ret = require_assign3(message)
     if ret == 1:
         #emoji = get(message.server.emojis, name="img000000093")
@@ -240,9 +239,23 @@ async def on_message(message):
         #'\N{THUMBS UP SIGN}'
         await message.add_reaction(emoji)
     elif ret == 2:
-        reps = ['Hallo {}, misschien kun je beter om hulp vragen in een van de dungeons kanalen?', 
-                'Goede post {}! Maar als het voor de "hulp-vraag-challenge" is, kun je die beter posten in de Help-help-helpdesk (in de Dungeons)'
-                'ja, okay, maar {} . . ., misschien kun je hulpvragen beter in een van de dungeons kanalen posten, zoals de HelpDesk?']        
+        reps = ['Hallo {}, misschien kun je beter om hulp vragen in een van de d.dungeons kanalen?',
+                'Goede post {}! Maar als het voor de "hulp-vraag-challenge" is, kun je die beter posten in de Help-help-helpdesk (in de Dungeons)',
+                'ja, okay, maar beste {} . . ., misschien kun je hulpvragen beter in een van de dungeons kanalen posten, zoals de HelpDesk?',
+                'Great post {}, but . . ., if its a help question, you could better ask it in the dungeons? Then you might score a point!',
+                'Rob likes your style {}, but if it is concerning a helpdesk question, you might better post in the HelpDesk (in the dungeons) ',
+                'Wow, just wow {}. . .',
+                'Denk je dat Rob(ot) slim genoeg is om hier wat mee te doen, {}?',
+                'Wat denk je zelf, {}?',
+                'Ja, maar wat denk je er zelf van, {}?',
+                '{}! Wat leuk dat je hier post, hoe is het met je?',
+                'I am afraid I can\'t do that, Dave, eh. . . {} ',
+                'prachtig geformuleerd {}, maar ik snap er niks van. . . wie weet kunnen we het in het help-help-helpdesk kanaal proberen?',
+                'Poeh, daar zeg je wat, {}. . . Zullen we het ergens in de Dungeons voortzetten? Daar is vast iemand die er (nog) beter antwoord op kan geven!',
+                'Eeehhh...',
+                'Just a minute {}, I\'m Computing (and working on) my best answer. . .',
+                'Unknown variable {}. Who is {}? Who are you? Who is Rob? Who am I. . ?'
+                ]
         await message.channel.send(random.choice(reps).format(message.author.name), reference=message)
 
     if require_assign4(message):
@@ -260,11 +273,11 @@ async def on_message(message):
     if require_assign7(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
-    
+
     if require_assign8(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
-        
+
     #print(message.content)
     if message.content.lower().startswith('hello'):
         #emoji = '\N{Waving Hand Sign}'
