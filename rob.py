@@ -26,7 +26,7 @@ def update_user(duser, duserstat):
 def update_word_count(duser, count):
     user = require_user(duser)
     cur_count = user['total_words']
-    print(cur_count, count)
+    #print(cur_count, count)
     user['total_words'] = cur_count + count
     update_user(duser, user)
 
@@ -279,10 +279,12 @@ async def on_message(message):
         await message.add_reaction(emoji)
 
     #print(message.content)
-    if message.content.lower().startswith('hello'):
+    if message.content.lower().startswith('hallo'):
         #emoji = '\N{Waving Hand Sign}'
         #await message.add_reaction(emoji)
-        await message.channel.send('Hello {}!'.format(message.author.name))
+        reps = ["Hello {}!","Ha {}, ook hallo!","Hoi {}, hoe is het?","Je klinkt enthousiast, {}! Zoek je een chatbot?"]
+        rep = random.choice(reps)
+        await message.channel.send(rep.format(message.author.name))
 
     # count words
     words = len(message.content.strip().split(" "))
