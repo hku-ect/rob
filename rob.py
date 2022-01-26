@@ -67,14 +67,49 @@ def dumpdbcsv():
         ret += "\n"
     return ret
 
-def bar_chart(numbers, labels, pos):
-    plt.barh(pos, numbers, color='green')
-    plt.barh(pos, numbers, color='red')
+def bar_chart(key):
+    keys = key or ['assign1', 'assign2', 'assign3', 'assign4', 'assign5', 'assign6', 'assign7', 'assign8', 'total_messages', 'total_reactions', 'total_words']
+    #print(keys)
+    score = {} #.[2, 1, 4, 6]
+    for k,v in ustats.items():
+        w = [0,]
+        for key in keys: # val in v.items():
+            val = v.get(key, 0)
+            if type(val) == int:
+                #print(w[0], val)
+                w[0] = w[0] + val
+                w.append(val)
+            if type(val) == str:
+                if val == "completed":
+                    w[0] = w[0] + 100
+                    w.append(100)
+                else:
+                    w.append(0)
+
+        score[k] = w
+        
+    # sorteer dict op hoogste score w[0]
+    res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])}
+    #print(res.keys())
+    labels = res.keys() # namen op de y as
+    pos = range(len(res.keys()))
+    #print(res.values())
+    numbers = [0] * len(res.keys())
+    prevy = [0] * len(res.keys())
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#67cfbe']
+    for x, col in zip(range(len(keys)), colors[:len(keys)]):
+        for i,v in enumerate(res.values()):
+            if x+1 < len(v):
+                numbers[i] = v[x+1]
+        #print(x, col, numbers)
+        
+        plt.barh(pos, numbers, left=prevy, color=col)
+        prevy = [prevy[i] + numbers[i] for i in range(len(numbers))]#numbers.copy()
+
     plt.yticks(ticks=pos, labels=labels)
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
-    #im = Image.open(buf)
     #plt.show()
     return buf
 
@@ -201,19 +236,11 @@ async def dumpcsv(ctx):
     await ctx.send(dumpdbcsv())
 
 @client.command()
-async def hiscore(ctx, iets=None):
-    iets = iets or "total_words"
-    print("generate chart for {}".format(iets))
-    score = {}
-    for k,v in ustats.items():
-        w = v.get(iets, 0)
-        score[k] = w
-    res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0])}
-    #print(numbers)
-    labels = res.keys() #['Electric', 'Solar', 'Diesel', 'Unleaded']
-    #print(labels)
-    pos = range(len(res))
-    img = bar_chart(res.values(), labels, pos)
+async def hiscore(ctx, *args):        
+    print("generate chart for {}".format(args))
+    if len(args) == 0:
+        args = None
+    img = bar_chart(args)
     await ctx.send(file=discord.File(img, filename="hiscore.png"))
 
 @client.event
