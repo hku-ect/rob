@@ -73,21 +73,22 @@ def bar_chart(key):
     score = {} #.[2, 1, 4, 6]
     for k,v in ustats.items():
         w = [0,]
-        for key in keys: # val in v.items():
-            val = v.get(key, 0)
-            if type(val) == int:
-                #print(w[0], val)
-                w[0] = w[0] + val
-                w.append(val)
-            if type(val) == str:
-                if val == "completed":
-                    w[0] = w[0] + 100
-                    w.append(100)
-                else:
-                    w.append(0)
+        if k not in ('Than', 'sphaero', 'Rob(ot)', 'Disco Rob', 'Arty'):
+            for key in keys: # val in v.items():
+                val = v.get(key, 0)
+                if type(val) == int:
+                    #print(w[0], val)
+                    w[0] = w[0] + val
+                    w.append(val)
+                if type(val) == str:
+                    if val == "completed":
+                        w[0] = w[0] + 100
+                        w.append(100)
+                    else:
+                        w.append(0)
 
-        score[k] = w
-        
+            score[k] = w
+            
     # sorteer dict op hoogste score w[0]
     res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])}
     #print(res.keys())
@@ -96,7 +97,7 @@ def bar_chart(key):
     #print(res.values())
     numbers = [0] * len(res.keys())
     prevy = [0] * len(res.keys())
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#67cfbe']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#b7cfbe']
     plt.rcParams["figure.figsize"] = (6,8)
     for x, col in zip(range(len(keys)), colors[:len(keys)]):
         for i,v in enumerate(res.values()):
