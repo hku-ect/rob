@@ -58,7 +58,7 @@ def dump_stats(username):
 
 def dumpdbcsv():
     ret = "username;"
-    columns = ["assign1", "assign2", "assign3", "assign4", "assign5", "assign6", "assign7", "assign8"]
+    columns = ["assign1", "assign2", "assign3", "assign4", "assign5", "assign6", "assign7", "assign8", "assign9"]
     for v in columns:
         ret += "{};".format(v)
     ret+="\n"
@@ -231,6 +231,23 @@ def require_assign8(msg):
         user["assign8"] = "incomplete"
         update_user(msg.author, user)
 
+#assignment 9: geluid uploaden
+def require_assign9(msg):
+    if msg.channel.name != "make-some-noise":
+        return
+    user = require_user(msg.author)
+    if user.get("assign9", "") == "completed":
+        return False
+    if "http" in msg.content or len(msg.attachments):
+        #user["assign5url"] = msg.attachments[0].url
+        user["assign9"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign9"] = "incomplete"
+        update_user(msg.author, user)
+
+
 
 @client.command()
 async def stat(ctx, user):
@@ -314,6 +331,10 @@ async def on_message(message):
         emoji = '\N{White Heavy Check Mark}'
         await message.add_reaction(emoji)
 
+    if require_assign9(message):
+            emoji = '\N{White Heavy Check Mark}'
+            await message.add_reaction(emoji)
+            
     #print(message.content)
     if message.content.lower().startswith('hallo'):
         #emoji = '\N{Waving Hand Sign}'
