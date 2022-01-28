@@ -48,7 +48,7 @@ def dump_stats(username):
         return "User {0} not found".format(username)
 
     statskeys = sorted(user.keys())
-    ret = "Stats for user: {}\n".format(username)
+    ret = "Stats for user: {}\n".format(user["displayname"])
     for key in statskeys:
         ret += "{} : {}\n".format(key, user[key])
     return ret
@@ -60,7 +60,7 @@ def dumpdbcsv():
         ret += "{};".format(v)
     ret+="\n"
     for user, entry in ustats.items():
-        ret += "{};".format(user)
+        ret += "{};".format(user["displayname"])
         for c in columns:
             ret += entry.get(c, "not found")
             ret += ";"
@@ -87,10 +87,10 @@ def bar_chart(key):
                     else:
                         w.append(0)
 
-            score[k] = w
+            score[v["displayname"]] = w
             
-    # sorteer dict op hoogste score w[0]
-    res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])}
+    # sorteer dict op hoogste score w[0] (werkt niet)
+    res = [key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])]
     #print(res.keys())
     labels = res.keys() # namen op de y as
     pos = range(len(res.keys()))
