@@ -255,11 +255,17 @@ async def stat(ctx, user):
 
 @client.command()
 async def dumpdb(ctx):
-    await ctx.send("```json\n" + json.dumps(dict(ustats)) + "```")
+    buf = io.BytesIO()
+    buf.write(json.dumps(dict(ustats)).encode())
+    buf.seek(0)    
+    await ctx.send(file=discord.File(buf, filename="db.json"))
 
 @client.command()
 async def dumpcsv(ctx):
-    await ctx.send(dumpdbcsv())
+    buf = io.BytesIO()
+    buf.write(dumpdbcsv().encode())
+    buf.seek(0)    
+    await ctx.send(file=discord.File(buf, filename="db.csv"))
 
 @client.command()
 async def hiscore(ctx, *args):        
