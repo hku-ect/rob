@@ -63,7 +63,7 @@ def dumpdbcsv():
         ret += "{};".format(v)
     ret+="\n"
     for user, entry in ustats.items():
-        ret += "{};".format(user["displayname"])
+        ret += "{};".format(entry["displayname"])
         for c in columns:
             ret += entry.get(c, "not found")
             ret += ";"
