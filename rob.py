@@ -93,7 +93,7 @@ def bar_chart(key):
             score[v["displayname"]] = w
             
     # sorteer dict op hoogste score w[0] (werkt niet)
-    res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])}
+    res = {key: val for key, val in sorted(score.items(), key = lambda kv:(kv[1][0], kv[0][0]))}
     #print(res.keys())
     labels = res.keys() # namen op de y as
     pos = range(len(res.keys()))
