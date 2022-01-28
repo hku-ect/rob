@@ -17,6 +17,9 @@ def require_user(discorduser):
     if not user:
         ustats[discorduser.name] = { 'displayname' : discorduser.display_name, 'total_words': 0, 'total_messages': 0, 'total_reactions': 0, "assign1" : "incomplete", "assign2" : "incomplete", "assign3" : "incomplete", "assign4" : "incomplete", "assign5" : "incomplete", "assign6" : "incomplete", "assign7" : "incomplete", "assign8" : "incomplete"   }
         return ustats[discorduser.name]
+    if user.get("displayname") != discorduser.display_name:
+        user["displayname"] = discorduser.display_name
+        update_user(discorduser, user)
     return user
 
 def update_user(duser, duserstat):
