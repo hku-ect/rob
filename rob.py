@@ -76,7 +76,7 @@ def bar_chart(key):
     score = {} #.[2, 1, 4, 6]
     for k,v in ustats.items():
         w = [0,]
-        if k not in ('Than', 'sphaero', 'Rob(ot)', 'Disco Rob', 'Arty'):
+        if k not in ('Than', 'sphaero', 'Rob(ot)', 'Disco Rob', 'Arty', "jennekeharings", "inezgroen", "Revess"):
             for key in keys: # val in v.items():
                 val = v.get(key, 0)
                 if type(val) == int:
