@@ -94,10 +94,10 @@ def bar_chart(key):
             
     # sorteer dict op hoogste score w[0] (werkt niet)
     res = {key: val for key, val in sorted(score.items(), key = lambda ele: ele[0][0])}
-    print(res.keys())
+    #print(res.keys())
     labels = res.keys() # namen op de y as
     pos = range(len(res.keys()))
-    print(res.values())
+    #print(res.values())
     numbers = [0] * len(res.keys())
     prevy = [0] * len(res.keys())
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#b7cfbe']
