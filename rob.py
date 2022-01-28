@@ -99,6 +99,7 @@ def bar_chart(key):
     prevy = [0] * len(res.keys())
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#b7cfbe']
     plt.rcParams["figure.figsize"] = (6,8)
+    plt.clf()
     for x, col in zip(range(len(keys)), colors[:len(keys)]):
         for i,v in enumerate(res.values()):
             if x+1 < len(v):
