@@ -10,7 +10,10 @@ import io
 #ustats = {}
 ustats = shelve.open("userstats", writeback=True)
 
-client = commands.Bot(command_prefix='?')
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = commands.Bot(intents=intents, command_prefix='?')
 
 def require_user(discorduser):
     user = ustats.get(discorduser.name, None)
@@ -138,6 +141,25 @@ def require_assign1(msg):
         user["assign1"] = "incomplete"
         update_user(msg.author, user)
 
+# assignment 2 : post AI generated image (Stable Diffusion, DALL-E, DiscoDiffusion, Midjourney) with prompt 
+def require_assign2(msg):
+    if msg.channel.name != "opdracht-2-screenshot-prompt":
+        return
+    user = require_user(msg.author)
+    if user.get("assign2", "") == "completed":
+        return
+    if len(msg.attachments) and msg.attachments[0].content_type.startswith("image"):
+        user["assign2url"] = msg.attachments[0].url
+    if len(msg.content):
+        user["assign2prompt"] = msg.content
+    if user.get("assign2prompt") and user.get("assign2url"):
+        user["assign2"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign1"] = "incomplete"
+        update_user(msg.author, user)
+        
 # assignment 3: ask for help challenge (in Help-help-helpdesk channel)
 def require_assign3(msg):
     if msg.channel.name == "ask-for-help-challenge": # assignment channel, wrong channel to post question --> answer with hint
