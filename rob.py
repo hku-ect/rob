@@ -61,7 +61,7 @@ def dump_stats(username):
 
 def dumpdbcsv():
     ret = "username;"
-    columns = ["assign1", "assign2", "assign3", "assign4", "assign5", "assign6", "assign7", "assign8", "assign9"]
+    columns = ["assign1", "assign2", "assign3", "assign4", "assign5", "assign6", "assign7", "assign8", "assign9", "assign10"]
     for v in columns:
         ret += "{};".format(v)
     ret+="\n"
@@ -74,7 +74,7 @@ def dumpdbcsv():
     return ret
 
 def bar_chart(key):
-    keys = key or ['assign1', 'assign2', 'assign3', 'assign4', 'assign5', 'assign6', 'assign7', 'assign8', 'total_messages', 'total_reactions', 'total_words']
+    keys = key or ['assign1', 'assign2', 'assign3', 'assign4', 'assign5', 'assign6', 'assign7', 'assign8', 'assign9', 'assign10', 'total_messages', 'total_reactions', 'total_words']
     #print(keys)
     score = {} #.[2, 1, 4, 6]
     for k,v in ustats.items():
@@ -125,7 +125,7 @@ def bar_chart(key):
     #plt.show()
     return buf
 
-# assignment 1 : post screenshot
+# assignment 1 : post screenshot of GPT 
 def require_assign1(msg):
     if msg.channel.name != "opdracht-1-screenshot-dag-1":
         return
@@ -164,7 +164,7 @@ def require_assign2(msg):
 def require_assign3(msg):
     if msg.channel.name == "ask-for-help-challenge": # assignment channel, wrong channel to post question --> answer with hint
         return 2
-    if (msg.channel.category_id == 917742829336428631): # d.dungeons category, including helpdesk channel
+    if (msg.channel.category_id == 1053245659010056232): # d.dungeons category, including helpdesk channel // correctly updated for 2023 ?
         user = require_user(msg.author)
         if user.get("assign3", "") == "completed":
             return 0
@@ -205,9 +205,9 @@ def require_assign5(msg):
         user["assign5"] = "incomplete"
         update_user(msg.author, user)
 
-#assignment 6: faceswap proof screenshot
+#assignment 6: biometrics proof screenshot
 def require_assign6(msg):
-    if msg.channel.name != "faceswap":
+    if msg.channel.name != "biometrics-work":
         return
     user = require_user(msg.author)
     if user.get("assign6", "") == "completed":
@@ -336,6 +336,18 @@ async def on_message(message):
                 'Unknown variable {}. Who is {}? Who are you? Who is Rob? Who am I. . ?'
                 ]
         await message.channel.send(random.choice(reps).format(message.author.name), reference=message)
+
+    if require_assign1(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+
+    if require_assign2(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
+
+    if require_assign3(message):
+        emoji = '\N{White Heavy Check Mark}'
+        await message.add_reaction(emoji)
 
     if require_assign4(message):
         emoji = '\N{White Heavy Check Mark}'
