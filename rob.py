@@ -237,20 +237,18 @@ def require_assign7(msg):
         user["assign7"] = "incomplete"
         update_user(msg.author, user)
 
-#assignment 8: link/pdf/docx or zip of end documentation
+#assignment 8: make a group channel in Discord, for your members and teachers 
+# just check if message is posted in a PROJECT ROOM category
 def require_assign8(msg):
-    if msg.channel.name != "end-documentation":
+    print(msg.channel.category.name)
+    if not msg.channel.category.name == "PROJECT ROOMS":
         return
     user = require_user(msg.author)
     if user.get("assign8", "") == "completed":
         return False
-    if "http" in msg.content or len(msg.attachments):
-        #user["assign5url"] = msg.attachments[0].url
-        user["assign8"] = "completed"
-        update_user(msg.author, user)
-        return True
     else:
-        user["assign8"] = "incomplete"
+        user["assign8"] = "completed"
+        user["assign8channelname"] = msg.channel.name
         update_user(msg.author, user)
 
 #assignment 9: geluid uploaden
