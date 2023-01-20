@@ -164,7 +164,7 @@ def require_assign2(msg):
 def require_assign3(msg):
     if msg.channel.name == "ask-for-help-challenge": # assignment channel, wrong channel to post question --> answer with hint
         return 2
-    if (msg.channel.category_id == 1053245659010056232): # d.dungeons category, including helpdesk channel // correctly updated for 2023 ?
+    if (msg.channel.category_id == 1053245659869892646): # d.dungeons category, including helpdesk channel // correctly updated for 2023 ?
         user = require_user(msg.author)
         if user.get("assign3", "") == "completed":
             return 0
@@ -240,8 +240,8 @@ def require_assign7(msg):
 #assignment 8: make a group channel in Discord, for your members and teachers 
 # just check if message is posted in a PROJECT ROOM category
 def require_assign8(msg):
-    print(msg.channel.category.name)
-    if not msg.channel.category.name == "PROJECT ROOMS":
+    #print("assign 8 " + msg.channel.category.name)
+    if not msg.channel.category.name == "Project Rooms":
         return
     user = require_user(msg.author)
     if user.get("assign8", "") == "completed":
@@ -250,6 +250,7 @@ def require_assign8(msg):
         user["assign8"] = "completed"
         user["assign8channelname"] = msg.channel.name
         update_user(msg.author, user)
+        return True
 
 #assignment 9: geluid uploaden
 def require_assign9(msg):
@@ -277,7 +278,7 @@ async def stat(ctx, user):
 async def dumpdb(ctx):
     buf = io.BytesIO()
     buf.write(json.dumps(dict(ustats)).encode())
-    buf.seek(0)    
+    buf.seek(0)
     await ctx.send(file=discord.File(buf, filename="db.json"))
 
 @client.command()
@@ -295,6 +296,13 @@ async def hiscore(ctx, *args):
     img = bar_chart(args)
     await ctx.send(file=discord.File(img, filename="hiscore.png"))
 
+@client.command()
+async def userlist(ctx):
+    usrs = ""
+    for u in ustats.keys():
+        usrs = usrs + "\n" + u + " : " + ustats.get(u).get("displayname", None)
+    await ctx.send(usrs)
+    
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
