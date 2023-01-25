@@ -268,6 +268,22 @@ def require_assign9(msg):
         user["assign9"] = "incomplete"
         update_user(msg.author, user)
 
+#assignment 10: file upload or link
+def require_assign10(msg):
+    if msg.channel.name != "end-documentation":
+        return
+    user = require_user(msg.author)
+    if user.get("assign10", "") == "completed":
+        return False
+    if "http" in msg.content or ( len(msg.attachments) and msg.attachments[0].content_type.startswith("application/pdf") ):
+        #user["assign5url"] = msg.attachments[0].url
+        user["assign10"] = "completed"
+        update_user(msg.author, user)
+        return True
+    else:
+        user["assign10"] = "incomplete"
+        update_user(msg.author, user)
+
 
 
 @client.command()
